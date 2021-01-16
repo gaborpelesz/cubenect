@@ -127,7 +127,7 @@ class Cubenect:
 
     def _run_dummy_loop(self):
         frame_id = 0
-        fps_in_sec = 0.05
+        fps_in_sec = 0.025
         last_frame_time = time.time()
 
         while(self.keep_running):
