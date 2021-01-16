@@ -74,6 +74,8 @@ def depth(dev, depth, timestamp):
 
     depth_close = depth_transforms.accurate_depth_image(depth, DEPTH_CALIBRATED_MM)
 
+    utils.cv2_window_freeratio(depth_close, "kinect depth map")
+
     if not DEPTH_CALIBRATED:
         if calibrate_depth(depth_close, value=170, epsilon=2, mode="median"):
             DEPTH_CALIBRATED = True
@@ -82,12 +84,12 @@ def depth(dev, depth, timestamp):
         else:
             DEPTH_CALIBRATED_MM += 1
         return
+    else:
+        depth_close_detected_actions = process_depth_frame(depth_close)
 
-    depth_close_detected_actions = process_depth_frame(depth_close)
-
-    window_name_cm = f"{DEPTH_CALIBRATED_MM/10:.1f}-{DEPTH_CALIBRATED_MM/10 + 25.5:.1f}cm"
-    utils.cv2_window_freeratio(depth_close, window_name_cm)
-    utils.cv2_window_freeratio(depth_close_detected_actions, f"{window_name_cm} detected action")
+        window_name_cm = f"{DEPTH_CALIBRATED_MM/10:.1f}-{DEPTH_CALIBRATED_MM/10 + 25.5:.1f}cm"
+        
+        utils.cv2_window_freeratio(depth_close_detected_actions, f"{window_name_cm} detected action")
 
     # HANDLING KEYBOARD EVENTS
     #     - "q", "esc" -> quit program
