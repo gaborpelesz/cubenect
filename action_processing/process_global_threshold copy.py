@@ -54,8 +54,8 @@ while True:
     if time.time() - fps_time > fps_in_sec:
         frame = depth_video[frame_id]
 
-        cv2.namedWindow("depth video", cv2.WINDOW_FREERATIO)
-        cv2.imshow("depth video", frame)
+        # cv2.namedWindow("depth video", cv2.WINDOW_FREERATIO)
+        # cv2.imshow("depth video", frame)
 
         if DO_THRESHOLD:
             frame = process_frame(frame)
@@ -81,6 +81,6 @@ while True:
     elif pressed_key == ord('s'):
         frame_path = f"test/images/frame_{frame_id}.png"
         if not os.path.exists(frame_path):
-            cv2.imwrite(frame_path, process_frame(depth_video[frame_id-1]))
+            cv2.imwrite(frame_path, depth_video[frame_id-1])
 
 cv2.destroyAllWindows()

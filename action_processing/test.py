@@ -7,11 +7,6 @@ def contour_filtering(contours):
         (x,y), radius = cv2.minEnclosingCircle(contour)
         min_circle_area = radius*radius * np.pi
 
-        print("contour:", contour_area)
-        print("circle:", min_circle_area)
-        print("ratio:", contour_area/min_circle_area)
-        print()
-
         if contour_area < 50:
             return False
 
@@ -25,30 +20,28 @@ def contour_filtering(contours):
 
 def process_frame(frame):
     _, frame = cv2.threshold(frame, 155, 255, cv2.THRESH_BINARY_INV)
-
     contours, _ = cv2.findContours(frame.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     detected_blob = contour_filtering(contours)
 
+    #frame = np.full((*frame.shape[:2], 3), 0, dtype=np.uint8)
     if detected_blob is None or len(detected_blob) == 0:
         return frame
 
-    contour_area = cv2.contourArea(detected_blob)
     (x,y), radius = cv2.minEnclosingCircle(detected_blob)
-    min_circle_area = radius*radius * np.pi
+    cv2.circle(frame, (int(x),int(y)), 12, (0,255,0), -1)
+
     print("BLOB:")
     print("contour:", contour_area)
     print("circle:", min_circle_area)
     print("ratio:", contour_area/min_circle_area)
     print()
 
-    frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
-    #cv2.drawContours(frame, [detected_blob], -1, (0, 0, 255), 3)
+    cv2.drawContours(frame, [detected_blob], -1, (0, 0, 255), 3)
 
     return frame
 
 def main():
-    frame = cv2.imread('test/images/frame_334.png', 0)
-    frame = cv2.bitwise_not(frame)
+    frame = cv2.imread('test/images/frame_105.png', 0)
     frame = process_frame(frame)
 
     cv2.namedWindow("depth video", cv2.WINDOW_FREERATIO)
