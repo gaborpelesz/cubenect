@@ -11,10 +11,10 @@ def packet(commands, slot_id=None):
     return commands + ["S 0\n"]
 
 def move(x, y):
-    return [f"X {x}", f"Y {y}", f"x {x}", f"y {y}", f"a 1"]
+    return [f"X {x}", f"Y {y}", f"x {x}", f"y {y}", "a 1"]
 
 def touch(t_id):
-    return [f"T {t_id}", f"0 10", f": 100", f"e 0", f"d 0"]
+    return [f"T {t_id}", "0 10", ": 100", "e 0", "d 0"]
 
 def untouch():
-    return [f"T -1", f"0 0", f": 0", f"e 0", f"u 0"]
+    return ["T -1", "0 0", ": 0", "e 0", "u 0"]
