@@ -15,7 +15,8 @@ class Cubenect:
                        calibration_error_epsilon=2,
                        calibration_mode="median",
                        debug=False,
-                       dummy_loop_frames=None):
+                       dummy_loop_frames=None,
+                       dummy_loop_frames_n=100):
         self.keep_running = False
 
         # test the behavior of settings the depth
@@ -31,8 +32,10 @@ class Cubenect:
             calibration_mode = "median"
         self.calibration_mode = calibration_mode
 
+        # dummy loop and debug settings
         self.is_debug = debug
         self.dummy_loop_frames = dummy_loop_frames
+        self.dummy_loop_frames_n = dummy_loop_frames_n
 
         self.action_callback = None
         self.tracked_action = None
@@ -127,11 +130,12 @@ class Cubenect:
 
     def _run_dummy_loop(self):
         frame_id = 0
-        fps_in_sec = 0.025
+        fps_in_sec = 0.00125
         last_frame_time = time.time()
 
-        while(self.keep_running):
-            if time.time() - last_frame_time > fps_in_sec:
+        loop_i = 0
+        while(self.keep_running and loop_i < self.dummy_loop_frames_n):
+            if time.time() - last_frame_time > fps_in_sec: # fps limit
                 frame = self.dummy_loop_frames[frame_id]
                 action_centers = self.pipeline.detect(frame)
                 self._tracking_action(action_centers)
@@ -153,3 +157,5 @@ class Cubenect:
                 if pressed_key == ord('q'):
                     print("Quiting...")
                     self.keep_running = False
+
+                loop_i += 1
