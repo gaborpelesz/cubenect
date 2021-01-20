@@ -4,9 +4,9 @@ class ContactSlot:
 
         self.center = None
         self.active = False
-        self.was_freed = False # when the slot was just freed up 
-                               # thus the multitouch driver might 
-                               # need to kill the previous
+        self.was_freed = False # it is true when the slot was just freed up 
+                               # because the multitouch driver might 
+                               # need to report the change
 
     def squared_distance(self, candidate_new_center):
         l2_norm = (self.center[0] - candidate_new_center[0])**2 + \
@@ -14,16 +14,17 @@ class ContactSlot:
         return l2_norm
 
     def update_center(self, new_center):
+        self.activate = False
         self.center = new_center
 
     def free(self):
         self.center = None
-        self.active = False
+        self.activate = False
         self.was_freed = True
 
     def new(self, center):
         self.center = center
-        self.active = True
+        self.activate = True
 
 class ContactTracker:
     def __init__(self, max_slot=10, acceptance_radius=10):
@@ -35,8 +36,11 @@ class ContactTracker:
         self._possible_tracked_contacts = None
     
     def update(self, new_centers):
+        # consider changing the saving of leftover possible contacts as a member
+        # because now the _update_currently_tracked function changes its state internally
         self._possible_tracked_contacts = set(self.currently_active_slots)
-        consider_adding_as_new = []
+        consider_adding_as_new = [] # saving contacts that aren't an update to previous
+                                    # so later they can be added as new if free slots are available
 
         # check if new candidates fit as an update
         # else try adding them as a new center
@@ -50,6 +54,7 @@ class ContactTracker:
             self.slots[i].free()
             self.currently_active_slots.remove(i)
 
+        # searching for free slots to place the saved contacts that we didn't find previous states for
         for center in consider_adding_as_new:
             empty_slots = set(range(self.max_slot)) - self.currently_active_slots
             
@@ -75,7 +80,7 @@ class ContactTracker:
                 closest = i
                 closest_dist = l2
 
-        # using squared acceptance radius so rooting l2 norm is not necessary
+        # using squared acceptance radius so getting the root of l2 norm is not necessary
         if closest_dist < self.acceptance_radius2:
             self.slots[closest].update_center(candidate_center)
             self._possible_tracked_contacts.remove(closest)
