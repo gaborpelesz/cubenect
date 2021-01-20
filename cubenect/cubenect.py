@@ -6,6 +6,7 @@ import cv2
 import freenect
 import numpy as np
 
+import tracker
 import processing
 import utils
 
@@ -37,9 +38,9 @@ class Cubenect:
         self.dummy_loop_frames = dummy_loop_frames
         self.dummy_loop_frames_n = dummy_loop_frames_n
 
+        self.contact_tracker = tracker.ContactTracker(max_slot=10, acceptance_radius=10)
         self.action_callback = None
-        self.tracked_action = None
-        self.pipeline = processing.AdaptiveThresholdDetection(debug=self.is_debug)
+        self.contact_detection_pipeline = processing.AdaptiveThresholdDetection(debug=self.is_debug)
 
     def run(self, action_callback):
         self.keep_running = True
@@ -55,49 +56,15 @@ class Cubenect:
 
         cv2.destroyAllWindows() # if any
 
-    def _tracking_action(self, new_centers, acceptance_radius=10):
-        """For now only one action is being tracked in FIFO style"""
-
-        # no new center --> stop tracking
-        if len(new_centers) == 0:
-            self.tracked_action = None
-            return
-
-        # no previous tracking --> start tracking with the first element in new center
-        if self.tracked_action is None:
-            self.tracked_action = new_centers[0] # maybe random choice?
-            return
-
-        acceptance_radius = acceptance_radius**10 # so squaring l2_norm to distance is not necessary
-
-        closest = None
-        closest_dist = float('inf')
-        for new_center in new_centers:
-            l2_norm = (self.tracked_action[0] - new_center[0])**2 + \
-                      (self.tracked_action[1] - new_center[1])**2
-            if l2_norm < closest_dist:
-                closest = new_center
-                closest_dist = l2_norm
-
-        # tracking: if the closest new center is in the acceptance radius --> follow
-        if closest_dist < acceptance_radius:
-            self.tracked_action = closest
-            return
-
-        # else: lose tracked center
-        self.tracked_action = None
-
-
     def _depth_callback(self, dev, depth, timestamp):
-        frame = utils.create_accurate_depth_image(depth, from_mm=self.depth_calibrated_mm)
+        depth_frame = utils.create_accurate_depth_image(depth, from_mm=self.depth_calibrated_mm)
 
         if not self.is_depth_calibrated:
             self._depth_calibration(depth)
             return
 
-        action_centers = self.pipeline.detect(frame)
-
-        self._tracking_action(action_centers)
+        contact_centers = self.contact_detection_pipeline.detect(depth_frame)
+        self.contact_tracker.update(new_centers)
 
         action_thread = threading.Thread(target=self.action_callback, args=(self.tracked_action,))
         action_thread.start()
@@ -137,7 +104,7 @@ class Cubenect:
         while(self.keep_running and loop_i < self.dummy_loop_frames_n):
             if time.time() - last_frame_time > fps_in_sec: # fps limit
                 frame = self.dummy_loop_frames[frame_id]
-                action_centers = self.pipeline.detect(frame)
+                action_centers = self.contact_detection_pipeline.detect(frame)
                 self._tracking_action(action_centers)
 
                 action_thread = threading.Thread(target=self.action_callback, args=(self.tracked_action,))
@@ -149,9 +116,9 @@ class Cubenect:
                 last_frame_time = time.time()
 
                 if self.is_debug:
-                    if not self.pipeline.action_detected_frame is None:
+                    if not self.contact_detection_pipeline.action_detected_frame is None:
                         utils.cv2_window_freeratio(frame, "debug frame")
-                        utils.cv2_window_freeratio(self.pipeline.action_detected_frame, "debug detected action")
+                        utils.cv2_window_freeratio(self.contact_detection_pipeline.action_detected_frame, "debug detected action")
 
                 pressed_key = cv2.waitKey(1)
                 if pressed_key == ord('q'):
