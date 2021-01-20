@@ -33,20 +33,21 @@ class Cubenect:
             calibration_mode = "median"
         self.calibration_mode = calibration_mode
 
+        self.contact_tracker = tracker.ContactTracker(max_slot=10, acceptance_radius=10)
+        self.contact_update_callback = None
+        self.contact_detection_pipeline = processing.AdaptiveThresholdDetection(debug=self.is_debug)
+
         # dummy loop and debug settings
         self.is_debug = debug
         self.dummy_loop_frames = dummy_loop_frames
         self.dummy_loop_frames_n = dummy_loop_frames_n
 
-        self.contact_tracker = tracker.ContactTracker(max_slot=10, acceptance_radius=10)
-        self.action_callback = None
-        self.contact_detection_pipeline = processing.AdaptiveThresholdDetection(debug=self.is_debug)
 
-    def run(self, action_callback):
+    def run(self, contact_update_callback):
         self.keep_running = True
 
         self._setup_handlers()
-        self.action_callback = action_callback
+        self.contact_update_callback = contact_update_callback
 
         if not self.dummy_loop_frames is None:
             self._run_dummy_loop()
@@ -66,8 +67,7 @@ class Cubenect:
         contact_centers = self.contact_detection_pipeline.detect(depth_frame)
         self.contact_tracker.update(new_centers)
 
-        action_thread = threading.Thread(target=self.action_callback, args=(self.tracked_action,))
-        action_thread.start()
+        self.contact_update_callback(self.contact_tracker)
 
     def _body(self, dev, ctx):
         if not self.keep_running:
@@ -85,7 +85,7 @@ class Cubenect:
         error = self.calibration_error(frame)
         if error < self.calibration_error_epsilon:
             self.is_depth_calibrated = True
-            print("Calibration finished! Feel free to make actions on the canvas interface.")
+            print("Calibration finished! Feel free to make contacts on the canvas interface.")
         else:
             self.depth_calibrated_mm += 1
 
@@ -104,11 +104,10 @@ class Cubenect:
         while(self.keep_running and loop_i < self.dummy_loop_frames_n):
             if time.time() - last_frame_time > fps_in_sec: # fps limit
                 frame = self.dummy_loop_frames[frame_id]
-                action_centers = self.contact_detection_pipeline.detect(frame)
-                self._tracking_action(action_centers)
+                contact_centers = self.contact_detection_pipeline.detect(frame)
+                self.contact_tracker.update(contact_centers)
 
-                action_thread = threading.Thread(target=self.action_callback, args=(self.tracked_action,))
-                action_thread.start()
+                self.contact_update_callback(self.contact_tracker)
 
                 frame_id += 1
                 if frame_id >= self.dummy_loop_frames.shape[0] - 1:
@@ -116,9 +115,9 @@ class Cubenect:
                 last_frame_time = time.time()
 
                 if self.is_debug:
-                    if not self.contact_detection_pipeline.action_detected_frame is None:
+                    if not self.contact_detection_pipeline.contact_detected_frame is None:
                         utils.cv2_window_freeratio(frame, "debug frame")
-                        utils.cv2_window_freeratio(self.contact_detection_pipeline.action_detected_frame, "debug detected action")
+                        utils.cv2_window_freeratio(self.contact_detection_pipeline.contact_detected_frame, "debug detected contact")
 
                 pressed_key = cv2.waitKey(1)
                 if pressed_key == ord('q'):
