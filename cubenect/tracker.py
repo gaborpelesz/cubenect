@@ -3,7 +3,7 @@ class ContactSlot:
         self.slot = slot
 
         self.center = None
-        self.active = False
+        self.activate = False  # indicates whether the slot need an initialization
         self.was_freed = False # it is true when the slot was just freed up 
                                # because the multitouch driver might 
                                # need to report the change
@@ -34,6 +34,8 @@ class ContactTracker:
         self.slots = [ContactSlot(i) for i in range(self.max_slot)]
         self.currently_active_slots = set()
         self._possible_tracked_contacts = None
+
+        self._freeup_all()
     
     def update(self, new_centers):
         # consider changing the saving of leftover possible contacts as a member
@@ -62,8 +64,9 @@ class ContactTracker:
                 return # return from function because there are no empty slots left
                        # for the remaining new contacts
             
-            self.slots[empty_slots[0]].new(center)
-            self.currently_active_slots.add(empty_slots[0])
+            first_empty_slot = next(iter(empty_slots))
+            self.slots[first_empty_slot].new(center)
+            self.currently_active_slots.add(first_empty_slot)
 
     def add_new(self, center):
         tracking_id = len(self.tracked_contacts) + 1
@@ -87,3 +90,7 @@ class ContactTracker:
             return True
         
         return False # no previous contact accepted this as an update
+
+    def _freeup_all(self):
+        for slot in self.slots:
+            slot.free()
