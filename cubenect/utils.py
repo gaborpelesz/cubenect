@@ -15,5 +15,5 @@ def create_accurate_depth_image(depth_data: np.ndarray, from_mm: int):
 
 def cv2_window_freeratio(img, title="<no title>"):
     cv2.namedWindow(title, cv2.WINDOW_NORMAL)
-    cv2.resizeWindow(title, 1500, 1200)
+    cv2.resizeWindow(title, 640, 480)
     cv2.imshow(title, img)
