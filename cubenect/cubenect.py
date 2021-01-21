@@ -33,15 +33,14 @@ class Cubenect:
             calibration_mode = "median"
         self.calibration_mode = calibration_mode
 
-        self.contact_tracker = tracker.ContactTracker(max_slot=10, acceptance_radius=10)
-        self.contact_update_callback = None
-        self.contact_detection_pipeline = processing.AdaptiveThresholdDetection(debug=self.is_debug)
-
         # dummy loop and debug settings
         self.is_debug = debug
         self.dummy_loop_frames = dummy_loop_frames
         self.dummy_loop_frames_n = dummy_loop_frames_n
 
+        self.contact_tracker = tracker.ContactTracker(max_slot=10, acceptance_radius=30)
+        self.contact_update_callback = None
+        self.contact_detection_pipeline = processing.AdaptiveThresholdDetection(debug=self.is_debug)
 
     def run(self, contact_update_callback):
         self.keep_running = True
