@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Cubenect
+Path=~/cubenect
+Exec=./startup.sh
+NoDisplay=false
+Hidden=false
+X-GNOME-Autostart-enabled=true
