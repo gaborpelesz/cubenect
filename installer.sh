@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # freenect and stuff
-cd ~/ ""
+cd ~/ 
 sudo apt-get install python3-pip 
 sudo -H pip3 install -r ~/cubenect/requirements.txt 
 sudo apt-get install libusb-1.0.0-dev cmake pkg-config 
