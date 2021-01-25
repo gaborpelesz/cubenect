@@ -34,5 +34,8 @@ class InterfaceLogic:
 
 logic = InterfaceLogic()
 
-cube = cubenect.Cubenect(debug=True)
+with open("action_processing/test/videos/record_close_1610737635.npy", "rb") as f:
+    depth_video = np.load(f)
+
+cube = cubenect.Cubenect(dummy_loop_frames=depth_video, debug=True, dummy_loop_frames_n=2000)
 cube.run(contact_update_callback=logic.print_action_callback)
