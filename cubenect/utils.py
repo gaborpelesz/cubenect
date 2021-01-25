@@ -17,3 +17,16 @@ def cv2_window_freeratio(img, title="<no title>"):
     cv2.namedWindow(title, cv2.WINDOW_NORMAL)
     cv2.resizeWindow(title, 640, 480)
     cv2.imshow(title, img)
+
+def cv2_window(img, title="<no title>", resizeable=True, size=None):
+    if resizeable:
+        cv2.namedWindow(title, cv2.WINDOW_FREERATIO)
+    else:
+        if size is None:
+            cv2.namedWindow(title, cv2.WINDOW_NORMAL)
+            cv2.resizeWindow(title, 640, 480)
+        else:
+            cv2.namedWindow(title, cv2.WINDOW_NORMAL)
+            cv2.resizeWindow(title, *size)
+    cv2.imshow(title, img)
+    
