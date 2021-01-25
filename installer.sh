@@ -36,7 +36,7 @@ cd /home/$USER
 mkdir .config .config/autostart
 echo "[Desktop Entry]
 Type=Application
-Exec=/home/jelenido/cubenect/startup.sh
+Exec=/home/$(echo $USER)/cubenect/startup.sh
 Hidden=false
 NoDisplay=false
 X-GNOME-Autostart-enabled=true
