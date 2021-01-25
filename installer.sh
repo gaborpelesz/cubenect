@@ -32,7 +32,9 @@ sudo apt-get install chromium-browser
 xdg-settings set default-web-browser chromium-browser.desktop
 
 # creating chromium autostart
-echo "/home/$USER/cubenect/startup.sh" >> ~/.xsessionrc
-
+cd /home/$USER
+mkdir .config .config/autostart
+echo "[Desktop Entry]\nType=Application\nExec=/home/jelenido/cubenect/startup.sh\nHidden=false\nNoDisplay=false\nX-GNOME-Autostart-enabled=true\nName[en_US]=Cubenect\nName=Cubenect\nComment[en_US]=\nComment=" >> .config/autostart/cubenect.desktop
 
 echo "Installation done. Restart and see if everything is working."
+
