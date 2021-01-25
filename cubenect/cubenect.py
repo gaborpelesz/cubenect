@@ -51,7 +51,7 @@ class Cubenect:
         if not self.dummy_loop_frames is None:
             self._run_dummy_loop()
         else:
-            freenect.runloop(depth=self._depth_calibration,
+            freenect.runloop(depth=self._depth_callback,
                              body=self._body)
 
         cv2.destroyAllWindows() # if any
@@ -60,13 +60,31 @@ class Cubenect:
         depth_frame = utils.create_accurate_depth_image(depth, from_mm=self.depth_calibrated_mm)
 
         if not self.is_depth_calibrated:
-            self._depth_calibration(depth)
+            print("calibrating...", end="\r")
+            utils.cv2_window(depth_frame, "calibration progress")
+            
+            pressed_key = cv2.waitKey(1)
+            if pressed_key == ord('q'):
+                print("Quiting...")
+                self.keep_running = False
+
+            self._depth_calibration(depth_frame)
             return
 
         contact_centers = self.contact_detection_pipeline.detect(depth_frame)
-        self.contact_tracker.update(new_centers)
+        self.contact_tracker.update(contact_centers)
 
         self.contact_update_callback(self.contact_tracker)
+
+        if self.is_debug:
+            if not self.contact_detection_pipeline.contact_detected_frame is None:
+                utils.cv2_window(depth_frame, "debug frame")
+                utils.cv2_window(self.contact_detection_pipeline.contact_detected_frame, "debug detected contact")
+
+                pressed_key = cv2.waitKey(1)
+                if pressed_key == ord('q'):
+                    print("Quiting...")
+                    self.keep_running = False
 
     def _body(self, dev, ctx):
         if not self.keep_running:
@@ -85,6 +103,8 @@ class Cubenect:
         if error < self.calibration_error_epsilon:
             self.is_depth_calibrated = True
             print("Calibration finished! Feel free to make contacts on the canvas interface.")
+            if self.is_debug:
+                cv2.destroyAllWindows()
         else:
             self.depth_calibrated_mm += 1
 
