@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import cubenect
 import multitouch_driver as mtd
@@ -47,6 +48,7 @@ class MultitouchDriver:
         with open("/dev/virtual_touchscreen", "w") as f:
             f.write(commands)
 
+# TODO delete class
 class InterfaceLogic:
     def __init__(self):
         self.hold = False
@@ -90,10 +92,14 @@ class InterfaceLogic:
         y = action_center[1]*self.height_multiplier + self.window_coordinates["top"]
         return (x, y)
 
-with open("action_processing/test/videos/record_close_1610737635.npy", "rb") as f:
+#with open(f"{'/'.join(__file__.split('/')[:4])}/action_processing/test/videos/record_close_1610737635.npy", "rb") as f:
+#    depth_video = np.load(f)
+
+with open(f"action_processing/test/videos/record_close_1610737635.npy", "rb") as f:
     depth_video = np.load(f)
 
 driver = MultitouchDriver()
 
 cube = cubenect.Cubenect(dummy_loop_frames=depth_video, debug=False, dummy_loop_frames_n=1000)
 cube.run(contact_update_callback=driver.multitouch_contact_callback)
+print("exiting program")
