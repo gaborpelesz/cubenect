@@ -92,11 +92,6 @@ class InterfaceLogic:
         y = action_center[1]*self.height_multiplier + self.window_coordinates["top"]
         return (x, y)
 
-with open(f"{'/'.join(__file__.split('/')[:4])}/action_processing/test/videos/record_close_1610737635.npy", "rb") as f:
-    depth_video = np.load(f)
-
-#with open(f"action_processing/test/videos/record_close_1610737635.npy", "rb") as f:
-#    depth_video = np.load(f)
 
 driver = MultitouchDriver()
 
