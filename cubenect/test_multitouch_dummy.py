@@ -100,6 +100,6 @@ with open(f"{'/'.join(__file__.split('/')[:4])}/action_processing/test/videos/re
 
 driver = MultitouchDriver()
 
-cube = cubenect.Cubenect(debug=False)
+cube = cubenect.Cubenect(dummy_loop_frames=depth_video, debug=False, dummy_loop_frames_n=1000)
 cube.run(contact_update_callback=driver.multitouch_contact_callback)
 print("exiting program")

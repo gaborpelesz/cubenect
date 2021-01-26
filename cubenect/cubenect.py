@@ -61,12 +61,13 @@ class Cubenect:
 
         if not self.is_depth_calibrated:
             print("calibrating...", end="\r")
-            utils.cv2_window(depth_frame, "calibration progress")
+            if self.is_debug:
+                utils.cv2_window(depth_frame, "calibration progress")
             
-            pressed_key = cv2.waitKey(1)
-            if pressed_key == ord('q'):
-                print("Quiting...")
-                self.keep_running = False
+                pressed_key = cv2.waitKey(1)
+                if pressed_key == ord('q'):
+                    print("Quiting...")
+                    self.keep_running = False
 
             self._depth_calibration(depth_frame)
             return

@@ -1,10 +1,15 @@
 #!/bin/bash
 
+# update and upgrade everything
+# important fixes for touchscreen are also present in those upgrades
+sudo apt-get update
+sudo apt-get upgrade
+
 # freenect and stuff
 cd ~/ 
-sudo apt-get install python3-pip 
+sudo apt-get install -y python3-pip 
 sudo -H pip3 install -r cubenect/requirements.txt 
-sudo apt-get install libusb-1.0.0-dev cmake pkg-config 
+sudo apt-get install -y libusb-1.0.0-dev cmake pkg-config 
 git clone https://github.com/gaborpelesz/libfreenect 
 cd libfreenect 
 mkdir build 
@@ -30,16 +35,35 @@ cd ~/
 git clone https://github.com/gaborpelesz/WebGL-Fluid-Simulation
 
 # download chrome-browser
-sudo apt-get install chromium-browser
+sudo apt-get install -y chromium-browser
 # set chromium the default browser: fixes unwanted header about it
 xdg-settings set default-web-browser chromium-browser.desktop
 
+# install and disable gestures
+chmod +x ~/cubenect/disable_gestures_extension/install.sh
+
 # creating chromium autostart
 cd /home/$USER
+chmod +x cubenect/starters/startup_chrome.sh
 mkdir .config .config/autostart
 echo "[Desktop Entry]
 Type=Application
-Exec=/home/$(echo $USER)/cubenect/startup.sh
+Exec=/home/$(echo $USER)/cubenect/starters/startup_chrome.sh
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name[en_US]=FluidSim
+Name=FluidSim
+Comment[en_US]=
+Comment=" >> .config/autostart/fluid.desktop
+
+# creating cubenect autostart
+cd /home/$USER
+chmod +x cubenect/starters/startup_cubenect.sh
+mkdir .config .config/autostart
+echo "[Desktop Entry]
+Type=Application
+Exec=/home/$(echo $USER)/cubenect/starters/startup_cubenect.sh
 Hidden=false
 NoDisplay=false
 X-GNOME-Autostart-enabled=true
@@ -47,6 +71,9 @@ Name[en_US]=Cubenect
 Name=Cubenect
 Comment[en_US]=
 Comment=" >> .config/autostart/cubenect.desktop
+
+# set autologin for current user
+sudo python3 ~/cubenect/autologin.py
 
 echo "Installation done. Restart and see if everything is working."
 
