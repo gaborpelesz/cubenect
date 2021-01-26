@@ -75,5 +75,8 @@ Comment=" >> .config/autostart/cubenect.desktop
 # set autologin for current user
 sudo python3 ~/cubenect/autologin.py
 
+# make python runnable by user without sudo
+echo "$USER $HOSTNAME = (root) NOPASSWD: /usr/bin/python3" | sudo tee /etc/sudoers.d/cubenect
+
 echo "Installation done. Restart and see if everything is working."
 
