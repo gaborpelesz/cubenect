@@ -42,6 +42,7 @@ xdg-settings set default-web-browser chromium-browser.desktop
 
 # install and disable gestures
 chmod +x ~/cubenect/disable_gestures_extension/install.sh
+~/cubenect/disable_gestures_extension/install.sh
 
 # creating chromium autostart
 cd /home/$USER
