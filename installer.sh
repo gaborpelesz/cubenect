@@ -29,6 +29,7 @@ sudo make
 sudo cp virtual_touchscreen.ko /lib/modules/`uname -r`
 sudo depmod -a
 sudo modprobe virtual_touchscreen
+echo "virtual_touchscreen" | sudo tee /etc/modules-load.d/virtual_touchscreen.conf
 
 # download fluid simulation
 cd ~/
