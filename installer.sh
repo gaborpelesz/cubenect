@@ -20,7 +20,10 @@ cd ~/
 git clone https://github.com/gaborpelesz/virtual_touchscreen 
 cd virtual_touchscreen 
 sudo make 
-sudo insmod virtual_touchscreen.ko
+# load in as a kernel module -> loads in every boot
+sudo cp virtual_touchscreen.ko /lib/modules/`uname -r`
+sudo depmod -a
+sudo modprobe virtual_touchscreen
 
 # download fluid simulation
 cd ~/
