@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 
 class ContactDetectionPipeline(abc.ABC):
+    """ abstract class for any type of contact detector """
     def __init__(self, debug=False):
         self.contact_detected_frame = None
         self.is_debug = debug
@@ -17,10 +18,9 @@ class ContactDetectionPipeline(abc.ABC):
 
 class AdaptiveThresholdDetection(ContactDetectionPipeline):
     def __init__(self, debug=False):
-        self.is_debug = debug
+        super().__init__(debug)
         self.kernel_3 = np.ones((3,3), np.uint8)
         self.kernel_5 = np.ones((5,5), np.uint8)
-        self.contact_detected_frame = None
 
     def detect(self, frame):
         # desaturate if necessary
