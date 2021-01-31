@@ -32,6 +32,9 @@ class AdaptiveThresholdDetection(ContactDetectionPipeline):
         frame_inv = cv2.bitwise_not(frame)
         frame_objectnoise_zeroed = cv2.bitwise_and(frame_inv, otsu_mask) # object (mostly) noise zeroed, canvas is white
 
+        if frame_objectnoise_zeroed.sum() < 100: # hard coded value
+            frame_objectnoise_zeroed = frame_inv # there was no noise to be zeroed
+
         # first adaptive threshold shows the object noise and the contacts
         # second adaptive threshold shows only the object noise
         # subtracting the two from eachother gives the contacts
