@@ -11,7 +11,8 @@ import processing
 import utils
 
 class Cubenect:
-    def __init__(self, depth_calibration_start_mm=400,
+    def __init__(self, flip=None,
+                       depth_calibration_start_mm=400,
                        calibration_objective=170,
                        calibration_error_epsilon=2,
                        calibration_mode="median",
@@ -41,7 +42,7 @@ class Cubenect:
 
         self.contact_tracker = tracker.ContactTracker(max_slot=10, acceptance_radius=30)
         self.contact_update_callback = None
-        self.contact_detection_pipeline = processing.AdaptiveThresholdDetection(debug=self.is_debug)
+        self.contact_detection_pipeline = processing.AdaptiveThresholdDetection(flip=flip, debug=self.is_debug)
 
     def run(self, contact_update_callback):
         self.keep_running = True
@@ -123,11 +124,11 @@ class Cubenect:
 
     def _run_dummy_loop(self):
         frame_id = 0
-        fps_in_sec = 0.00125
+        fps_in_sec = 0.02
         last_frame_time = time.time()
 
         loop_i = 0
-        while(self.keep_running and loop_i < self.dummy_loop_frames_n):
+        while self.keep_running and loop_i < self.dummy_loop_frames_n:
             if time.time() - last_frame_time > fps_in_sec: # fps limit
                 frame = self.dummy_loop_frames[frame_id]
                 contact_centers = self.contact_detection_pipeline.detect(frame)
@@ -145,9 +146,9 @@ class Cubenect:
                         utils.cv2_window_freeratio(frame, "debug frame")
                         utils.cv2_window_freeratio(self.contact_detection_pipeline.contact_detected_frame, "debug detected contact")
 
-                pressed_key = cv2.waitKey(1)
-                if pressed_key == ord('q'):
-                    print("Quiting...")
-                    self.keep_running = False
+                    pressed_key = cv2.waitKey(1)
+                    if pressed_key == ord('q'):
+                        print("Quiting...")
+                        self.keep_running = False
 
                 loop_i += 1

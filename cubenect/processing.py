@@ -3,6 +3,8 @@ import abc
 import cv2
 import numpy as np
 
+import utils
+
 class ContactDetectionPipeline(abc.ABC):
     """ abstract class for any type of contact detector """
     def __init__(self, debug=False):
@@ -17,15 +19,19 @@ class ContactDetectionPipeline(abc.ABC):
         raise NotImplementedError
 
 class AdaptiveThresholdDetection(ContactDetectionPipeline):
-    def __init__(self, debug=False):
+    def __init__(self, flip=None, debug=False):
         super().__init__(debug)
         self.kernel_3 = np.ones((3,3), np.uint8)
         self.kernel_5 = np.ones((5,5), np.uint8)
+        self.flip = flip
 
     def detect(self, frame):
         # desaturate if necessary
         if len(frame.shape) > 2 and frame.shape[2] == 3:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        if self.flip is not None:
+            frame = cv2.flip(frame, self.flip)
 
         # create a more separate view of the not canvas objects and the canvas
         _, otsu_mask = cv2.threshold(frame, 0, 255, cv2.THRESH_OTSU)
@@ -45,7 +51,7 @@ class AdaptiveThresholdDetection(ContactDetectionPipeline):
 
         # eliminate small noise in the contacts binary image
         # and close the contact components with kernel 5 dilation 3 times
-        small_noise_eliminated = cv2.erode(contact_highlighthed_noise_eliminated, self.kernel_3, iterations=1)
+        small_noise_eliminated = cv2.erode(contact_highlighthed_noise_eliminated, self.kernel_5, iterations=1)
         connected_close_components = cv2.dilate(small_noise_eliminated, self.kernel_5, iterations=3)
 
         # find contours and filter those that has smaller area than 1% of the total frame area
