@@ -68,10 +68,6 @@ class ContactTracker:
             self.slots[first_empty_slot].new(center)
             self.currently_active_slots.add(first_empty_slot)
 
-    def add_new(self, center):
-        tracking_id = len(self.tracked_contacts) + 1
-        self.tracked_contacts(Contact(center, tracking_id))
-
     def _update_currently_tracked(self, candidate_center):
         closest = None
         closest_dist = float('inf')
