@@ -46,7 +46,7 @@ class Cubenect:
     def run(self, contact_update_callback):
         self.keep_running = True
         print("setting up handlers")
-        self._setup_handlers()
+        #self._setup_handlers()
         print("save the contact update callback")
         self.contact_update_callback = contact_update_callback
         print("decide if dummy")
