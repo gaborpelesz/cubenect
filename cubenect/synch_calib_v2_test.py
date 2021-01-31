@@ -1,7 +1,9 @@
-import cv2
-import numpy as np
 import subprocess
 import threading
+import json
+import os
+
+import cv2
 
 import cubenect
 import calib_gui as gui
@@ -40,7 +42,25 @@ class CalibrationController:
         self.bottom_right_calibrated = None
 
     def _save_calibration_data(self):
-        print("Saving calibration data into file")
+        if self.top_left_calibrated is None or self.bottom_right_calibrated is None:
+            raise Exception("Calibration did not complete... Unknown error, possible bug.")
+
+        print("calibrated top:", self.top_left_calibrated)
+        print("calibrated bottom:", self.bottom_right_calibrated)
+
+        config = {}
+        config_file_path = './cubenect/config.json'
+        print(f"Saving calibration data into file: {config_file_path}")
+        if os.path.exists(config_file_path):
+            with open(config_file_path) as json_file:
+                config = json.load(json_file)
+
+        config['SYNCH_CALIBRATION'] = {}
+        config['SYNCH_CALIBRATION']['TOP_LEFT'] = self.top_left_calibrated
+        config['SYNCH_CALIBRATION']['BOTTOM_RIGHT'] = self.bottom_right_calibrated
+
+        with open(config_file_path) as json_file:
+            json.dump(config, json_file)
 
     def switch_calibration_stage(self):
                  # stage 1: start tracking top left
@@ -67,9 +87,6 @@ class CalibrationController:
             self.bottom_right_calibrated = self.centers[2]
             self._save_calibration_data()
             self.keep_running = False
-
-            print("calibrated top:", self.top_left_calibrated)
-            print("calibrated bottom:", self.bottom_right_calibrated)
                  # ... save bottom right circle center
                  # ... save calibration data
                  # ... stop loop
@@ -129,12 +146,8 @@ class CalibrationController:
             self.handle_keyboard_action(k)
 
     def init_tracking(self):
-        # dummy: todo delete
-        #with open("action_processing/test/videos/record_close_1610737635.npy", "rb") as f:
-        #    depth_video = np.load(f)
-
         flip = utils.CV2_VERTICAL_FLIP if self.rotate90 in ("left", "right") else utils.CV2_HORIZONTAL_FLIP
-        self.current_cubenect = cubenect.Cubenect(debug=False, flip=flip)#, dummy_loop_frames=depth_video, dummy_loop_frames_n=100000)
+        self.current_cubenect = cubenect.Cubenect(debug=False, flip=flip)
         thread_stage = threading.Thread(target=self.current_cubenect.run, args=(self.handle_new_contact, ))
         thread_stage.start()
 
