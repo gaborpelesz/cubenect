@@ -9,15 +9,19 @@ import utils
 
 class CalibrationController:
     def __init__(self, rotate90=None):
-        # get display size run: xrandr | grep '*'
-        proc_1 = subprocess.Popen(['xrandr'], stdout=subprocess.PIPE)
-        proc_2 = subprocess.Popen(['grep', '*'], stdin=proc_1.stdout, stdout=subprocess.PIPE)
-        proc_1.stdout.close()
-        # monitor params
-        width, height = proc_2.communicate()[0].split()[0].decode("utf-8").split('x')
-        width, height = int(width), int(height)
-
-        proc_2.stdout.close()
+        try:
+            # get display size run: xrandr | grep '*'
+            proc_1 = subprocess.Popen(['xrandr'], stdout=subprocess.PIPE)
+            proc_2 = subprocess.Popen(['grep', '*'], stdin=proc_1.stdout, stdout=subprocess.PIPE)
+            proc_1.stdout.close()
+            # monitor params
+            width, height = proc_2.communicate()[0].split()[0].decode("utf-8").split('x')
+            width, height = int(width), int(height)
+            proc_2.stdout.close()
+        except FileNotFoundError:
+            print("Can't get display size.")
+            width, height = 2560, 1600
+            print(f"Probably using Mac... Setting display to: {width}, {height}")
 
         self.current_cubenect = None
         self.gui = gui.CalibrationGUI((width, height))
@@ -126,8 +130,8 @@ class CalibrationController:
 
     def init_tracking(self):
         # dummy: todo delete
-        with open("action_processing/test/videos/record_close_1610737635.npy", "rb") as f:
-            depth_video = np.load(f)
+        #with open("action_processing/test/videos/record_close_1610737635.npy", "rb") as f:
+        #    depth_video = np.load(f)
 
         flip = utils.CV2_VERTICAL_FLIP if self.rotate90 in ("left", "right") else utils.CV2_HORIZONTAL_FLIP
         self.current_cubenect = cubenect.Cubenect(debug=False, flip=flip, dummy_loop_frames=depth_video, dummy_loop_frames_n=100000)
