@@ -1,10 +1,11 @@
 import cv2
 import numpy as np
 import subprocess
-import calib_gui as gui
 import threading
-import cubenect
 
+import cubenect
+import calib_gui as gui
+import utils
 
 class CalibrationController:
     def __init__(self, rotate90=None):
@@ -29,10 +30,6 @@ class CalibrationController:
         self.last_valid = None
 
         self.kinect_size = (640, 480)
-        if rotate90 in ("left", "right"):
-            self.scale_to_display = [height/self.kinect_size[1], width/self.kinect_size[0]]
-        else:
-            self.scale_to_display = [width/self.kinect_size[0], height/self.kinect_size[1]]
         self.rotate90 = rotate90
 
         self.top_left_calibrated = None
@@ -108,27 +105,32 @@ class CalibrationController:
     def translate_contact(self, center):
         center = list(center)
         if self.rotate90 in ("left", "right"):
-            if self.rotate90 == "left":
-                center[0] = self.kinect_size[0] - center[0]
-            elif self.rotate90 == "right":
-                center[1] = self.kinect_size[1] - center[1]
+            if self.rotate90 == "right":
+                center[1] = self.kinect_size[1] - center[1] # rotate 1.
+                center = [center[1], center[0]]             # rotate 2.
+                center[0] = int(self.gui.window_width/self.kinect_size[1] * center[0])  # scale 1.
+                center[1] = int(self.gui.window_height/self.kinect_size[0] * center[1]) # scale 2.
+            elif self.rotate90 == "left":
+                raise NotImplementedError
 
-            center = [center[1], center[0]]
-
-        center = int(center[0]*self.scale_to_display[0]), int(center[1]*self.scale_to_display[1])
-        #print(center)
-        return center
+        return tuple(center)
 
     def run(self):
         self.init_tracking()
 
+        # gui loop and keyboard action handling
         while self.keep_running:
             self.gui.draw(self.centers[self.selected])
             k = cv2.waitKey(10)
             self.handle_keyboard_action(k)
 
     def init_tracking(self):
-        self.current_cubenect = cubenect.Cubenect(debug=False)
+        # dummy: todo delete
+        with open("action_processing/test/videos/record_close_1610737635.npy", "rb") as f:
+            depth_video = np.load(f)
+
+        flip = utils.CV2_VERTICAL_FLIP if self.rotate90 in ("left", "right") else utils.CV2_HORIZONTAL_FLIP
+        self.current_cubenect = cubenect.Cubenect(debug=False, flip=flip, dummy_loop_frames=depth_video, dummy_loop_frames_n=100000)
         thread_stage = threading.Thread(target=self.current_cubenect.run, args=(self.handle_new_contact, ))
         thread_stage.start()
 
@@ -138,6 +140,6 @@ class CalibrationController:
 
 
 if __name__ == "__main__":
-    controller = CalibrationController(rotate90="left")
+    controller = CalibrationController(rotate90="right")
     controller.run()
     cv2.destroyAllWindows()
