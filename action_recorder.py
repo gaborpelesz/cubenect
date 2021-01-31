@@ -74,6 +74,9 @@ def depth(dev, depth, timestamp):
 
     depth_close = depth_transforms.accurate_depth_image(depth, DEPTH_CALIBRATED_MM)
 
+    if SAVE_VIDEO_CLOSE:
+        NP_VIDEO_PACKETS.append(depth_close)
+
     utils.cv2_window_freeratio(depth_close, "kinect depth map")
 
     if not DEPTH_CALIBRATED:
