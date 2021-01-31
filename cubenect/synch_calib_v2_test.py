@@ -134,7 +134,7 @@ class CalibrationController:
         #    depth_video = np.load(f)
 
         flip = utils.CV2_VERTICAL_FLIP if self.rotate90 in ("left", "right") else utils.CV2_HORIZONTAL_FLIP
-        self.current_cubenect = cubenect.Cubenect(debug=False, flip=flip, dummy_loop_frames=depth_video, dummy_loop_frames_n=100000)
+        self.current_cubenect = cubenect.Cubenect(debug=False, flip=flip)#, dummy_loop_frames=depth_video, dummy_loop_frames_n=100000)
         thread_stage = threading.Thread(target=self.current_cubenect.run, args=(self.handle_new_contact, ))
         thread_stage.start()
 
