@@ -56,5 +56,5 @@ class CalibrationGUI:
             frame = self._draw_circle(frame, center)
 
         cv2.namedWindow("gui", cv2.WINDOW_NORMAL)
-        #cv2.setWindowProperty("gui", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+        cv2.setWindowProperty("gui", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
         cv2.imshow("gui", frame)
