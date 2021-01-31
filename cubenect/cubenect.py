@@ -26,6 +26,7 @@ class Cubenect:
 
         # start depth calibration at 400mm default
         self.depth_calibrated_mm = depth_calibration_start_mm
+        self.depth_calibrated_max_mm = 2000 # 2000mm is the max a kinect would be able to see
         self.is_depth_calibrated = False
         self.calibration_error_epsilon = calibration_error_epsilon
         self.calibration_objective = calibration_objective
@@ -108,8 +109,11 @@ class Cubenect:
             print("Calibration finished! Feel free to make contacts on the canvas interface.")
             if self.is_debug:
                 cv2.destroyAllWindows()
-        else:
+        elif self.depth_calibrated_mm < self.depth_calibrated_max_mm:
             self.depth_calibrated_mm += 1
+        else:
+            print("ERROR: Calibration failed, it exceeded the max mm limit. Aborting program.")
+            self.keep_running = False
 
     def calibration_error(self, frame):
         if self.calibration_mode == "median":
