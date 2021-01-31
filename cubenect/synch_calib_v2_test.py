@@ -58,6 +58,8 @@ class CalibrationController:
         config['SYNCH_CALIBRATION'] = {}
         config['SYNCH_CALIBRATION']['TOP_LEFT'] = self.top_left_calibrated
         config['SYNCH_CALIBRATION']['BOTTOM_RIGHT'] = self.bottom_right_calibrated
+        config['SYNCH_CALIBRATION']['WINDOW_WIDTH'] = self.gui.window_width
+        config['SYNCH_CALIBRATION']['WINDOW_HEIGHT'] = self.gui.window_height
 
         with open(config_file_path) as json_file:
             json.dump(config, json_file)
@@ -91,7 +93,7 @@ class CalibrationController:
                  # ... save calibration data
                  # ... stop loop
 
-    def handle_keyboard_action(self, key_code):
+    def handle_keyboard_events(self, key_code):
         """ q -> abort
             SHIFT -> change circle moving speed (slow, medium, fast)
             ENTER -> next stage of the calibration
@@ -143,7 +145,7 @@ class CalibrationController:
         while self.keep_running:
             self.gui.draw(self.centers[self.selected])
             k = cv2.waitKey(10)
-            self.handle_keyboard_action(k)
+            self.handle_keyboard_events(k)
 
     def init_tracking(self):
         flip = utils.CV2_VERTICAL_FLIP if self.rotate90 in ("left", "right") else utils.CV2_HORIZONTAL_FLIP
