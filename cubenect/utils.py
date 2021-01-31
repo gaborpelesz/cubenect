@@ -1,6 +1,9 @@
 import numpy as np
 import cv2
 
+CV2_HORIZONTAL_FLIP = 1
+CV2_VERTICAL_FLIP = 0
+
 def create_accurate_depth_image(depth_data: np.ndarray, from_mm: int):
     """ from a given milimeter, creates an image
         consisting of datapoints with 255 mm range
