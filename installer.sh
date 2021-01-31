@@ -76,6 +76,9 @@ Comment=" >> .config/autostart/cubenect.desktop
 
 # set autologin for current user
 sudo python3 ~/cubenect/autologin.py
+gsettings set org.gnome.desktop.screensaver lock-enabled false
+gsettings set org.gnome.desktop.screensaver lock-delay 0
+gsettings set org.gnome.desktop.session idle-delay 0
 
 # make python runnable by user without sudo
 echo "$USER $HOSTNAME = (root) NOPASSWD: /usr/bin/python3" | sudo tee /etc/sudoers.d/cubenect
