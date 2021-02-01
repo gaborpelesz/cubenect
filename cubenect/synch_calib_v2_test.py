@@ -52,8 +52,12 @@ class CalibrationController:
         config_file_path = './cubenect/config.json'
         print(f"Saving calibration data into file: {config_file_path}")
         if os.path.exists(config_file_path):
-            with open(config_file_path) as json_file:
-                config = json.load(json_file)
+            with open(config_file_path, "r") as json_file:
+                try:
+                    config = json.load(json_file)
+                except Exception:
+                    print("Can't open previous configuration, creating a new one...")
+                    config = {}
 
         config['SYNCH_CALIBRATION'] = {}
         config['SYNCH_CALIBRATION']['TOP_LEFT'] = self.top_left_calibrated
@@ -61,7 +65,7 @@ class CalibrationController:
         config['SYNCH_CALIBRATION']['WINDOW_WIDTH'] = self.gui.window_width
         config['SYNCH_CALIBRATION']['WINDOW_HEIGHT'] = self.gui.window_height
 
-        with open(config_file_path) as json_file:
+        with open(config_file_path, "w") as json_file:
             json.dump(config, json_file)
 
     def switch_calibration_stage(self):
