@@ -9,8 +9,12 @@ class MultitouchDriver:
         if not os.path.exists(config_file_path):
             raise FileNotFoundError("Screen calibration config file was not found. Calibrate cubenect before using it.")
 
-        with open(config_file_path) as config_file:
-            config = json.load(config_file)
+        with open(config_file_path, "r") as config_file:
+            try:
+                config = json.load(config_file)
+            except Exception:
+                print("ERROR: Can't understand json file, it is well formed?")
+                raise Exception("ERROR: Can't understand json file, it is well formed?")
 
         self.calibrated_screen_parameters = config['SYNCH_CALIBRATION']
 
