@@ -24,6 +24,9 @@ class AdaptiveThresholdDetection(ContactDetectionPipeline):
         self.kernel_3 = np.ones((3,3), np.uint8)
         self.kernel_5 = np.ones((5,5), np.uint8)
         self.flip = flip
+        self.kinect_width = 640
+        self.kinect_height = 480
+        self.detection_padding = 10
 
     def detect(self, frame):
         # desaturate if necessary
@@ -73,6 +76,8 @@ class AdaptiveThresholdDetection(ContactDetectionPipeline):
             M = cv2.moments(contact_contour)
             cX = int(M["m10"] / M["m00"])
             cY = int(M["m01"] / M["m00"])
-            contact_centers.append((cX,cY))
+            if cX > self.detection_padding and cX < self.kinect_width - self.detection_padding:
+                if cY > self.detection_padding and cY < self.kinect_height - self.detection_padding:
+                    contact_centers.append((cX,cY))
 
         return contact_centers
