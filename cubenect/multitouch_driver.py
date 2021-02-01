@@ -5,7 +5,7 @@ class MultitouchDriver:
     def __init__(self, rotate_direction="clockwise"):
         self.current_commands = None
 
-        config_file_path = './cubenect/config.json'
+        config_file_path = '/home/digital/cubenect/cubenect/config.json'
         if not os.path.exists(config_file_path):
             raise FileNotFoundError("Screen calibration config file was not found. Calibrate cubenect before using it.")
 
