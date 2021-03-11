@@ -9,7 +9,7 @@ The side of the cube is projected from inside with a special projector creating 
 
 The Cubenenct software only uses the Kinect's depth image. Using an adaptive threshold based algorithm, the software detects the contacts that have been made with the canvas and a custom tracker algorithm tracks these through their lifetime (until we stop pushing the canvas). The software registers and sends an update on each contact creation and change as a multitouch event through the Virtual touchscreen driver to the Linux system.
 
-The repository also contains a calibration program with which the Kinect-based touchscreen and the projectors display can be calibrated.
+The repository also contains a calibration program with which the Kinect-based touchscreen and the projector's display can be calibrated.
 
 Eventually the result is a fully functional multitouch screen on the side of the cube. In the demo, we used the amazing fluid simulator by [PavelDoGreat](https://github.com/PavelDoGreat/WebGL-Fluid-Simulation) in fullscreen mode from a Chromium browser (only modifications to the simulator was just the removal of the menu bar)
 
