@@ -91,3 +91,9 @@ The keyboard inputs for the calibration program:
 - `Shift` -> change the indicator circle's **moving speed** (slow, medium, fast)
 - `Enter` -> proceed to the **next stage** of the calibration
 - `Arrow Keys` -> move the calibration indicator circles
+
+## License
+
+The project is under MIT License, thus permission is hereby granted to use any of the provided results.
+
+© Gabor Pelesz 2021, <gaborpelesz@gmail.com>
