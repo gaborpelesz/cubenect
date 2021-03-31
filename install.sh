@@ -3,7 +3,7 @@
 # update and upgrade everything
 # important fixes for touchscreen are also present in those upgrades
 sudo apt-get update
-sudo apt-get upgrade
+sudo apt-get -y upgrade
 
 # freenect and stuff
 cd ~/ 
