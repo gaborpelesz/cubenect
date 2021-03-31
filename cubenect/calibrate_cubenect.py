@@ -49,7 +49,7 @@ class CalibrationController:
         print("calibrated bottom:", self.bottom_right_calibrated)
 
         config = {}
-        config_file_path = './cubenect/config.json'
+        config_file_path = './cubenect/calibration_config.json'
         print(f"Saving calibration data into file: {config_file_path}")
         if os.path.exists(config_file_path):
             with open(config_file_path, "r") as json_file:

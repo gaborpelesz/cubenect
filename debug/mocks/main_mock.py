@@ -3,7 +3,7 @@ import cubenect
 import multitouch_driver as mtd
 
 # action_processing/test/videos/record_close_1610737635.npy
-file_path = f"{'/'.join(__file__.split('/')[:4])}/action_processing/test/videos/record_close_1610737635.npy"
+file_path = f"{'/'.join(__file__.split('/')[:4])}/debug/action_processing/test/videos/record_close_1610737635.npy"
 
 with open(file_path, "rb") as f:
     depth_video = np.load(f)
