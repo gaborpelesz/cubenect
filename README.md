@@ -47,12 +47,15 @@ It is recommended to use a GPU for the WebGL fluid simulator in case of a low-en
 
 ### 3. Install Cubenect and configure system
 
-1. press **Ctrl+Alt+T** to open a terminal. After typing any command you should hit **Enter** to run it.
-2. Type: `sudo apt-get update`
-3. Type: `sudo apt-get install -y git`
-4. Type: `git clone https://github.com/gaborpelesz/cubenect ~/cubenect`
-5. Type: `chmod +x ~/cubenect/install.sh`
-6. Type: `~/cubenect/install.sh`
+Note: *in the terminal, you might need to enter your password ('1234' - by default) at certain stages.*
+
+1. press **Ctrl+Alt+T** to open a terminal.
+2. Type and run: `sudo apt-get update`
+3. Type and run: `sudo apt-get install -y git`
+4. Type and run: `git clone https://github.com/gaborpelesz/cubenect ~/cubenect`
+5. Type and run: `chmod +x ~/cubenect/install.sh`
+6. Type and run: `~/cubenect/install.sh`
+7. (opt) Calibrate cubenect or add previous calibration file
 7. **Restart** the computer
 
 After restarting everything should be set and the computer should startup in the "Exhibition" mode.
@@ -68,3 +71,23 @@ After the system boots up and you see the Fluid simulator initialize (it starts 
 ### Calibrating Cubenect
 
 At first it is possible that your touch and the resulting action is misaligned. Therefore we created a calibration software to calibrate the touch events to the projectors view.
+
+It is easier to calibrate Cubenect before Restarting the computer after the installation. In that case, to run calibration open up a terminal (**Ctrl+Alt+T**) and type: `python3 ~/cubenect/cubenect/calibrate_cubenect.py`.
+
+**WARNING:** as for now, the calibration assumes a rotated Kinect in 90 degrees clockwise inside the cube (or anti-clockwise if you stand in front of the cameras).
+
+The calibration screen is a fullwhite screen projected where the a touch event is shown as a red circular indicator. The job of the calibrator is to first find the **top-left** most point of the canvas where the Kinect is sensing the touch (the indicator is present somewhere). After finding it the calibrator should leave his finger at this position and proceed to the next phase of the calibration which is to move the indicator red circle with the Arrow keys to the exact point he/she is currently pointing to.
+
+The next step is to do the exact same procedure for the **bottom-right** most point too.
+
+The stages of the calibration procedure (After finishing a step, hit **Enter**):
+1. Find **top-left** most point with your finger on the canvas that is still being detected
+2. Move the red indicator circle to the exact same point as your finger on the canvas
+3. Find **bottom-right** most point with your finger on the canvas that is still being detected
+4. Move the red indicator circle to the exact same point as your finger on the canvas
+
+The keyboard inputs for the calibration program:
+- `q` -> **exit** and abort the calibration
+- `Shift` -> change the indicator circle's **moving speed** (slow, medium, fast)
+- `Enter` -> proceed to the **next stage** of the calibration
+- `Arrow Keys` -> move the calibration indicator circles
