@@ -1,9 +1,7 @@
 # Cubenect
-Cubenect is a large cube with a canvas wrapped around it that works as a multitouch Kinect-based computer interface. The Cubenect project is currently an exhibit at a [digital exhibition](https://digitaliseromu.hu/) in Hungary.
+Cubenect is a large cube with a canvas wrapped around it that works as a multitouch Kinect-based computer interface. The Cubenect project is currently an exhibit at a [digital exhibition](https://digitaliseromu.hu/) in Hungary. See the article on [index.hu](https://index.hu/kultur/2021/09/18/ozd-kohaszat-digitalis-eromu-mars-interaktiv-szeleczky-zita-jovo/) if you are interested (language is hungarian).
 
 ![cubenect (6)](https://user-images.githubusercontent.com/20257264/110841923-c5d22e00-82a6-11eb-8527-c66b61510058.gif)
-
-See the article on [index.hu](https://index.hu/kultur/2021/09/18/ozd-kohaszat-digitalis-eromu-mars-interaktiv-szeleczky-zita-jovo/) if you are interested (language is hungarian).
 
 ## How it works
 
