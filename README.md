@@ -3,6 +3,8 @@ Cubenect is a large cube with a canvas wrapped around it that works as a multito
 
 ![cubenect (6)](https://user-images.githubusercontent.com/20257264/110841923-c5d22e00-82a6-11eb-8527-c66b61510058.gif)
 
+See the article on [index.hu](https://index.hu/kultur/2021/09/18/ozd-kohaszat-digitalis-eromu-mars-interaktiv-szeleczky-zita-jovo/) if you are interested (language is hungarian).
+
 ## How it works
 
 The side of the cube is projected from inside with a special projector creating the view. Inside the cube a Kinect is hanged right at the middle of the opposite side and tilted in 90 degrees. For processing a low-cost PC is used which is also placed inside the cube.
