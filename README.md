@@ -94,6 +94,6 @@ The keyboard inputs for the calibration program:
 
 ## License
 
-The project is under MIT License, thus permission is hereby granted to use any of the provided results.
+The project is under GPLv3 License, and available for non-commercial purposes.
 
 © Gabor Pelesz 2021, <gaborpelesz@gmail.com>
